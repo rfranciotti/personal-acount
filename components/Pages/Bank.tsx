@@ -92,6 +92,7 @@ export default function BankPage() {
     };
 
     const handleNew = () => {
+
         if ((nome !== "" || agencia !== "" || conta !== "") && !statusSaved) {
             setshowModal(true);
         } else { ClearForm(); }
