@@ -7,7 +7,7 @@ const size = {
   mobileM: '375px',
   mobileL: '425px',
   tablet: '768px',
-  laptop: '1024px',
+  laptop: '1100px',
   laptopL: '1440px',
   laptopX: '1640px',
   desktop: '2560px'
@@ -57,7 +57,6 @@ export const FormSmall = styled.div`
   width:70%
 }
 @media (min-width: ${size.laptop}) and (max-width: ${size.laptopX}){
-  background-color:blue;
   width:50%
 }
 @media (min-width: ${size.laptopX}) and (max-width: ${size.desktop}){

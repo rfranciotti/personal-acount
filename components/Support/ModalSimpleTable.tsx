@@ -21,16 +21,13 @@ const style = {
 interface IModal {
     open: boolean,
     onclose?: (choiced: boolean, row: any) => void; //diz que se nao vier function nao executa
+    header: string[];
+    rows?: string[];
 }
 
 export default function ModalSimpleTable(props: IModal) {
 
     const [openMe, setopenMe] = useState(props.open);
-
-    const header = ["ID", "Num. Banco", "Nome Banco", "Agencia", "Conta", "Chave", "Pix", "Ativo", "*Fav"];
-    const rows = [
-        ["00001", "1", "Itau", "001", "010001.111", "CPF", "123456", "S", "N"],
-        ["00002", "2", "Bradesco", "002", "010001.112", "CNPJ", "456789", "N", "S"]];
 
     const handleClose = () => {
         setopenMe(false);
@@ -53,7 +50,7 @@ export default function ModalSimpleTable(props: IModal) {
             aria-describedby="modal-modal-description"
         >
             <Box sx={style} style={{ backgroundColor: "#E7ECEF", width: "60%", maxWidth: "800px" }}>
-                <TableSimple header={header} rows={rows} onchoiced={(row) => handleChoiced(row)} hideFirst />
+                <TableSimple header={props.header} rows={props.rows} onchoiced={(row) => handleChoiced(row)} hideFirst />
             </Box>
         </Modal>
 

@@ -33,7 +33,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 interface IAppProps {
     header: string[],
-    rows: any[];
+    rows?: string[];
     hideFirst?: boolean,
     onchoiced?: (row: any) => void; //diz que se nao vier function nao executa
 }
@@ -52,7 +52,7 @@ export default function TableSimple(props: IAppProps) {
                     <TableRow>
                         {props.header.map((index, key) => {
 
-                            console.log(index);
+                            //console.log(index);
 
 
                             if (key === 0 && props.hideFirst) {
@@ -74,12 +74,12 @@ export default function TableSimple(props: IAppProps) {
                 <TableBody>
 
 
-                    {props.rows.map((row, key) => {
+                    {props.rows?.map((row, key) => {
 
                         let pushMeRows: any[] = [];
 
                         for (let i = 0; i < row.length; i++) {
-                            console.log("PROPS HEADER", props.header[i]);
+                            //console.log("PROPS HEADER", props.header[i]);
                             if (i === 0) {
 
 

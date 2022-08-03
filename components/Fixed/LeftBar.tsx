@@ -63,10 +63,12 @@ export default function LeftBar(props: IAppProps) {
                 </a>
                 <div className={styles.divisor}></div>
                 <div className={styles.titleSector}>Cad. Básico</div>
-                <div className={styles.divItem}>
-                    <SiPicpay className={styles.icon} />
-                    <span>Formas</span>
-                </div>
+                <a onClick={(e) => handleClickCard(e, './formas')} >
+                    <div className={styles.divItem}>
+                        <SiPicpay className={styles.icon} />
+                        <span>Formas</span>
+                    </div>
+                </a>
                 <div className={styles.divItem}>
                     <MdTimer className={styles.icon} />
                     <span>Períodos</span>

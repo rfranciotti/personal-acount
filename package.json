@@ -20,7 +20,9 @@
     "react": "^18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0",
+    "react-loading-overlay-ts": "^2.0.0",
     "react-router-dom": "^6.3.0",
+    "react-spinners": "^0.13.4",
     "recoil": "^0.7.4",
     "sass": "^1.54.0",
     "styled-components": "^5.3.5"

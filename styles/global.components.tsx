@@ -61,7 +61,7 @@ export const CardFlex = styled.div<{ noborder?: boolean; space?: number; color?:
     };
 
 `;
-export const CardFlexCol = styled.div<{ noborder?: boolean; space?: number; color?: any; }>`
+export const CardFlexCol = styled.div<{ noborder?: boolean; space?: number; color?: any; centered?: boolean; }>`
     display:flex;
     margin-top:5px;
     margin-bottom:10px;
@@ -73,6 +73,7 @@ export const CardFlexCol = styled.div<{ noborder?: boolean; space?: number; colo
     font-family: 'Poppins', sans-serif !important;
     gap:${props => props.space + "px"} ;
     flex-direction:column;
+    align-items:${props => props.centered ? `center` : `left`};
 `;
 
 export const BoxBorder = styled.div`

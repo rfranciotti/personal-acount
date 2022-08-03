@@ -10,7 +10,7 @@ import ModalSimpleTable from '@components/Support/ModalSimpleTable';
 import ModalSimple from '@components/Support/ModalSimple';
 import AlertTitle from '@mui/material/AlertTitle';
 import { motion } from "framer-motion";
-
+import MyLoader from '@components/Support/Loader';
 
 
 export default function BankPage() {
@@ -34,6 +34,10 @@ export default function BankPage() {
     const [alert, setAlert] = useState<number>(0);
     const [showModal, setshowModal] = useState(false);
     const [showModalPesq, setshowModalPesq] = useState(false);
+    const [loader, setLoader] = useState(false);
+    const [headerTablePesq, setHeaderTablePesq] = useState<string[]>([]);
+    const [dataTablePesq, setDataTablePesq] = useState<string[]>([]);
+
 
     useEffect(() => {
         if (alert !== 0) {
@@ -92,6 +96,7 @@ export default function BankPage() {
     };
 
     const handleNew = () => {
+
         if ((nome !== "" || agencia !== "" || conta !== "") && !statusSaved) {
             setshowModal(true);
         } else { ClearForm(); }
@@ -110,23 +115,29 @@ export default function BankPage() {
             ativo: ativo
         };
         console.log("DATA SAVED:", saveData);
-
+        setLoader(true);
 
         if (idItem === "") {
+
             await axios.post('http://localhost:6001/api/banco/', saveData)
                 .then((response) => {
                     if (response.status === 202) {
                         setAlert(1);
+                        console.log(response.data.message);
                     } else {
                         setAlert(2);
                     }
+                    setLoader(false);
                 })
                 .catch((error) => {
-                    console.log("ERROR TOTAL", error);
+                    console.log("Erro Post Banco", error);
                     setAlert(99);
+                    setLoader(false);
                 });
             setstatusSaved(true);
         } else {
+            //console.log("PATH");
+            console.log(saveData);
 
             await axios.patch('http://localhost:6001/api/banco/', saveData)
                 .then((response) => {
@@ -138,13 +149,46 @@ export default function BankPage() {
                     }
                 })
                 .catch((error) => {
-                    console.log("ERROR TOTAL BANK");
+                    console.log("Erro Patch Banco");
+                    setLoader(false);
                 });
             setstatusSaved(true);
+            setLoader(false);
         }
     };
 
-    const handlePesq = async () => { setshowModalPesq(true); };
+    const handlePesq = async () => {
+        setHeaderTablePesq(["ID", "Num.2", "Nome Banco", "Agencia", "Conta", "Chave", "Pix", "Ativo", "*Fav"]);
+        let datarow: any = [];
+        await axios.get('http://localhost:6001/api/bancos/')
+            .then((response) => {
+
+                let ativo = "";
+                let fav = "";
+
+                for (let index = 0; index < response.data.data.length; index++) {
+
+                    const element = response.data.data[index];
+
+                    if (element.st_ativo) { ativo = "S"; } else { ativo = "N"; }
+                    if (element.st_fav) { fav = "S"; } else { fav = "N"; }
+
+                    datarow.push([element._id, element.num_banco,
+                    element.nome_banco, element.agencia,
+                    element.conta, element.tp_chave, element.pix, ativo, fav]);
+                }
+                setDataTablePesq(datarow);
+            })
+            .catch((error) => {
+                console.log('2  ');
+
+                console.log("Erro Find Bancos");
+            });
+
+
+
+        setshowModalPesq(true);
+    };
 
 
 
@@ -154,63 +198,76 @@ export default function BankPage() {
 
     return (
         <FormSmall>
-            <TitleForm>BANCOS</TitleForm>
-            <CardFlexCol color={"#BCD2EE"} space={10}>
-                <Stack direction={'row'} spacing={2}>
-                    <TextField id="outlined-basic" label="Num." variant="outlined" style={{ width: '18%' }} value={numBanco} onChange={(e) => setNumBanco(e.target.value)} />
-                    <TextField id="outlined-basic" label="Nome Banco" variant="outlined" style={{ width: '90%' }} value={nome} onChange={(e) => setNome(e.target.value)} />
-                </Stack>
-            </CardFlexCol>
-            <CardFlexCol color={"#BCD2EE"} space={10}>
-                <Stack direction={'row'} spacing={2}>
-                    <TextField id="outlined-basic" label="Agencia" variant="outlined" style={{ width: '30%' }} value={agencia} onChange={(e) => setAgencia(e.target.value)} />
-                    <TextField id="outlined-basic" label="Conta" variant="outlined" style={{ width: '70%' }} value={conta} onChange={(e) => setConta(e.target.value)} />
-                </Stack>
-            </CardFlexCol>
-            <CardFlexCol color={"#BCD2EE"} space={10}>
-                <Stack direction={'row'} spacing={2}>
-                    <Select value={chave} onChange={handleChangeChave} style={{ width: '20%' }}>
-                        <MenuItem value={"CPF"}>CPF</MenuItem>
-                        <MenuItem value={"Celular"}>Celular</MenuItem>
-                        <MenuItem value={"CNPJ"}>CNPJ</MenuItem>
-                        <MenuItem value={"Outros"}>Outros</MenuItem>
-                    </Select>
-                    <TextField id="outlined-basic" label="Pix" variant="outlined" style={{ width: '60%' }} value={pix} onChange={(e) => setPix(e.target.value)} />
-                    <FormControlLabel
-                        control={<Checkbox onChange={handleChangeAtivo} value={ativo} checked={ativo} />}
-                        label="Ativo"
-                    />
+            <MyLoader active={loader}>
 
-                </Stack>
-            </CardFlexCol>
+                <TitleForm>BANCOS</TitleForm>
 
-            <BoxBorder>
-                <DivLeft>
-                    <Image src={"/icons/file2.svg"} width={50} height={50} style={{ marginRight: "10px" }} onClick={handleNew} />
-                    <Image src={"/icons/Download.svg"} width={41} height={50} style={{ marginRight: "50px" }} onClick={handleSave} />
-                    <Image src={"/icons/del2.svg"} width={50} height={50} />
-                    {fav === true ?
-                        <Image src={"/icons/love1.png"} width={50} height={50} onClick={() => setFav(!fav)} /> :
-                        <Image src={"/icons/love2.svg"} width={50} height={50} onClick={() => setFav(!fav)} />
-                    }
+                <CardFlexCol color={"#BCD2EE"} space={10}>
+                    <Stack direction={'row'} spacing={2}>
+                        <TextField id="outlined-basic" label="Num." variant="outlined" style={{ width: '18%' }} value={numBanco} onChange={(e) => setNumBanco(e.target.value)} />
+                        <TextField id="outlined-basic" label="Nome Banco" variant="outlined" style={{ width: '90%' }} value={nome} onChange={(e) => setNome(e.target.value)} />
+                    </Stack>
+                </CardFlexCol>
+                <CardFlexCol color={"#BCD2EE"} space={10}>
+                    <Stack direction={'row'} spacing={2}>
+                        <TextField id="outlined-basic" label="Agencia" variant="outlined" style={{ width: '30%' }} value={agencia} onChange={(e) => setAgencia(e.target.value)} />
+                        <TextField id="outlined-basic" label="Conta" variant="outlined" style={{ width: '70%' }} value={conta} onChange={(e) => setConta(e.target.value)} />
+                    </Stack>
+                </CardFlexCol>
+                <CardFlexCol color={"#BCD2EE"} space={10}>
+                    <Stack direction={'row'} spacing={2}>
+                        <Select value={chave} onChange={handleChangeChave} style={{ width: '20%' }}>
+                            <MenuItem value={"CPF"}>CPF</MenuItem>
+                            <MenuItem value={"Celular"}>Celular</MenuItem>
+                            <MenuItem value={"CNPJ"}>CNPJ</MenuItem>
+                            <MenuItem value={"Outros"}>Outros</MenuItem>
+                        </Select>
+                        <TextField id="outlined-basic" label="Pix" variant="outlined" style={{ width: '60%' }} value={pix} onChange={(e) => setPix(e.target.value)} />
+                        <FormControlLabel
+                            control={<Checkbox onChange={handleChangeAtivo} value={ativo} checked={ativo} />}
+                            label="Ativo"
+                        />
 
-                    <Image src={"/icons/browser.svg"} width={41} height={50} onClick={handlePesq} />
-                </DivLeft>
-                <DivRight>
-                    <Image src={"/icons/home.svg"} width={50} height={50} />
-                </DivRight>
-            </BoxBorder>
-            {showModal === true &&
-                <ModalSimple
+                    </Stack>
+                </CardFlexCol>
+
+                <BoxBorder>
+                    <DivLeft>
+                        <Image src={"/icons/file2.svg"} width={50} height={50} style={{ marginRight: "10px" }} onClick={handleNew} />
+                        <Image src={"/icons/Download.svg"} width={41} height={50} style={{ marginRight: "50px" }} onClick={handleSave} />
+                        <Image src={"/icons/del2.svg"} width={50} height={50} />
+                        {fav === true ?
+                            <Image src={"/icons/love1.png"} width={50} height={50} onClick={() => setFav(!fav)} /> :
+                            <Image src={"/icons/love2.svg"} width={50} height={50} onClick={() => setFav(!fav)} />
+                        }
+
+                        <Image src={"/icons/browser.svg"} width={41} height={50} onClick={handlePesq} />
+                    </DivLeft>
+                    <DivRight>
+                        <Image src={"/icons/home.svg"} width={50} height={50} />
+                    </DivRight>
+
+                </BoxBorder>
+                {showModal === true &&
+                    <ModalSimple
+                        open={true}
+                        header={"Descartar alterações?"}
+                        content={"Campos estão com conteúdo. Descartar ?"}
+                        btnYes
+                        btnNo
+                        onGetReturn={(clear, getret) => closeModalNew(clear, getret)} />
+                }
+                {showModalPesq && <ModalSimpleTable
                     open={true}
-                    header={"Descartar alterações?"}
-                    content={"Campos estão com conteúdo. Descartar ?"}
-                    btnYes
-                    btnNo
-                    onGetReturn={(clear, getret) => closeModalNew(clear, getret)} />
-            }
-            {showModalPesq && <ModalSimpleTable open={true} onclose={(haschoice, row) => closeModalPesq(haschoice, row)} />}
+                    header={headerTablePesq}
+                    rows={dataTablePesq}
+                    onclose={(haschoice, row) => closeModalPesq(haschoice, row)} />}
 
+
+
+
+
+            </MyLoader>
             {alert === 0 && <></>}
             {alert !== 0 &&
                 <motion.div animate={{ y: 25 }}>
@@ -221,8 +278,8 @@ export default function BankPage() {
                         display: "flex",
                         justifyContent: "center"
                     }}>
-                        {alert === 1 && <Alert severity="error">This is an error alert — check it out!</Alert>}
-                        {alert === 2 && <Alert severity="success">This is a success alert — check it out!</Alert>}
+                        {alert === 1 && <Alert severity="error">Ocorreu erro!</Alert>}
+                        {alert === 2 && <Alert severity="success">Operação Efetuada !</Alert>}
                         {alert === 99 &&
                             <Alert severity="warning">
                                 <AlertTitle>Erro Geral</AlertTitle>
@@ -231,7 +288,6 @@ export default function BankPage() {
                     </div>
                 </motion.div>
             }
-
         </FormSmall >
     );
 }
