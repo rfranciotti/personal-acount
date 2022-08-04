@@ -63,7 +63,18 @@ export const FormSmall = styled.div`
   
 }
 `;
+export const FormLarge = styled.div`
+  width:100%;
+  height:100%;
+  background-color:white;
+  border-radius:20px;
+  
+    -webkit-box-shadow: 0px 0px 7px -3px #000000; 
+    box-shadow: 7px 2px 7px -3px #000000;
+    
 
+
+`;
 
 export const TitleForm = styled.div`
     top:0;

@@ -5,7 +5,7 @@ import * as React from 'react';
 export interface IAppProps {
 }
 
-export default function Banks(props: IAppProps) {
+export default function Formas(props: IAppProps) {
     return (
         <FormaPage />
     );

@@ -1,0 +1,47 @@
+.sectorGrid {
+    display: grid;
+
+}
+
+.sectorTop {
+    background-color: red;
+    display: flex;
+    margin: 5px;
+    gap: 5px;
+
+}
+
+
+
+.topLeft {
+    background-color: grey;
+    width: 100%;
+    height: 150px;
+    border-radius: 15px;
+    flex: 2;
+}
+
+.topMiddle {
+    background-color: rgb(226, 167, 167);
+    height: 150px;
+    flex: 1;
+    border-radius: 15px;
+}
+
+.topRight {
+    background-color: rgb(167, 188, 226);
+    height: 150px;
+    flex: 2;
+    border-radius: 15px;
+}
+
+
+
+.sectorMiddle {
+    background-color: blue;
+    height: 300px;
+}
+
+.sectorBottom {
+    background-color: yellow;
+}

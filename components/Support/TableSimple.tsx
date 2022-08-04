@@ -33,8 +33,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 interface IAppProps {
     header: string[],
-    rows?: string[];
+    rows?: string[][];
     hideFirst?: boolean,
+    shrink?: boolean,
     onchoiced?: (row: any) => void; //diz que se nao vier function nao executa
 }
 
@@ -46,23 +47,40 @@ export default function TableSimple(props: IAppProps) {
 
 
     return (
-        <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 600 }} aria-label="customized table">
-                <TableHead>
-                    <TableRow>
+        <TableContainer component={Paper}
+            style={{ height: "100px", overflowX: `${props.shrink ? 'hidden' : 'auto'}` }}>
+            <Table
+                sx={{
+                    minWidth: 600
+                }}
+                aria-label="customized table" stickyHeader>
+
+                <TableHead style={{
+                    padding: `${props.shrink && '5px'}`
+                }}>
+                    <TableRow sx={{ height: "20px" }}>
                         {props.header.map((index, key) => {
 
                             //console.log(index);
 
 
                             if (key === 0 && props.hideFirst) {
-                                return (<StyledTableCell key={key} align="left" style={{ display: "none" }}>{index}</StyledTableCell>);
+                                return (<StyledTableCell
+                                    key={key}
+                                    align="left"
+                                    style={{ display: "none" }}>{index}</StyledTableCell>);
 
                             } else {
                                 if (index.startsWith("*")) {
-                                    return (<StyledTableCell key={key} align="left" style={{ display: "none" }}>{index}</StyledTableCell>);
+                                    return (<StyledTableCell
+                                        key={key}
+                                        align="left"
+                                        style={{ display: "none" }}>{index}</StyledTableCell>);
                                 } else {
-                                    return (<StyledTableCell key={key} align="left" >{index}</StyledTableCell>);
+                                    return (<StyledTableCell
+                                        key={key}
+                                        align="left"
+                                        style={{ padding: `${props.shrink && '5px'}`, fontSize: `${props.shrink && '10px'}` }}>{index}</StyledTableCell>);
                                 }
                             }
 
@@ -85,13 +103,21 @@ export default function TableSimple(props: IAppProps) {
 
                                 if (props.hideFirst) {
                                     pushMeRows.push(
-                                        <StyledTableCell component="th" scope="row" key={i} style={{ display: "none" }} >
+                                        <StyledTableCell
+                                            component="th"
+                                            scope="row"
+                                            key={i}
+                                            style={{ display: "none", padding: `${props.shrink && '5px'}` }} >
                                             {row[0]}
                                         </StyledTableCell>
                                     );
                                 } else {
                                     pushMeRows.push(
-                                        <StyledTableCell component="th" scope="row" key={i} >
+                                        <StyledTableCell
+                                            component="th"
+                                            scope="row"
+                                            key={i}
+                                            style={{ padding: `${props.shrink && '5px'}`, fontSize: `${props.shrink && '12px'}` }}>
                                             {row[0]}
                                         </StyledTableCell>
                                     );
@@ -100,9 +126,11 @@ export default function TableSimple(props: IAppProps) {
 
                             } else {
                                 if (props.header[i].startsWith("*")) {
-                                    pushMeRows.push(<StyledTableCell style={{ display: "none" }} align="left" key={i}>{row[i]}</StyledTableCell>);
+                                    pushMeRows.push(<StyledTableCell
+                                        style={{ display: "none", padding: `${props.shrink && '5px'}`, fontSize: `${props.shrink && '12px'}` }} align="left" key={i}>{row[i]}</StyledTableCell>);
                                 } else {
-                                    pushMeRows.push(<StyledTableCell align="left" key={i}>{row[i]}</StyledTableCell>);
+                                    pushMeRows.push(<StyledTableCell align="left" key={i}
+                                        style={{ padding: `${props.shrink && '5px'}`, fontSize: `${props.shrink && '12px'}` }}> {row[i]}</StyledTableCell>);
                                 }
 
                             }

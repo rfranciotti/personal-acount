@@ -41,10 +41,12 @@ export default function LeftBar(props: IAppProps) {
                     <AiFillDashboard className={styles.icon} />
                     <span>Dashboard</span>
                 </div>
-                <div className={styles.divItem}>
-                    <MdDashboard className={styles.icon} />
-                    <span>Principal</span>
-                </div>
+                <a onClick={(e) => handleClickBank(e, './main')}>
+                    <div className={styles.divItem}>
+                        <MdDashboard className={styles.icon} />
+                        <span>Principal</span>
+                    </div>
+                </a>
 
                 <div className={styles.divisor}></div>
                 <div className={styles.titleSector}>Cad. Inst.</div>
@@ -69,14 +71,18 @@ export default function LeftBar(props: IAppProps) {
                         <span>Formas</span>
                     </div>
                 </a>
-                <div className={styles.divItem}>
-                    <MdTimer className={styles.icon} />
-                    <span>Períodos</span>
-                </div>
-                <div className={styles.divItem}>
-                    <BsAppIndicator className={styles.icon} />
-                    <span>Categorias</span>
-                </div>
+                <a onClick={(e) => handleClickCard(e, './periodos')} >
+                    <div className={styles.divItem}>
+                        <MdTimer className={styles.icon} />
+                        <span>Períodos</span>
+                    </div>
+                </a>
+                <a onClick={(e) => handleClickCard(e, './categs')} >
+                    <div className={styles.divItem}>
+                        <BsAppIndicator className={styles.icon} />
+                        <span>Categorias</span>
+                    </div>
+                </a>
                 <div className={styles.divItem}>
                     <MdToday className={styles.icon} />
                     <span>Feriados</span>

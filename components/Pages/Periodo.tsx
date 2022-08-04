@@ -13,27 +13,26 @@ import { motion } from "framer-motion";
 import MyLoader from '@components/Support/Loader';
 
 
-export default function FormaPage() {
+export default function PeriodoPage() {
 
 
     const handleChangeAtivo = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAtivo(event.target.checked);
     };
-    const handleChangeInst = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setreqInst(event.target.checked);
+    const handleChangeOperador = (event: SelectChangeEvent) => {
+        setOperador(event.target.value as string);
     };
-    const handleChangeDoc = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setreqDoc(event.target.checked);
-    };
-    const handleChangeCard = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setstCard(event.target.checked);
+    const handleChangeTempo = (event: SelectChangeEvent) => {
+        setTempo(event.target.value as string);
     };
 
-    const [IdForma, setIdForma] = useState<string>("");
-    const [nomeForma, setNomeForma] = useState<string>("");
-    const [reqInst, setreqInst] = useState<boolean>(false);
-    const [reqDoc, setreqDoc] = useState<boolean>(false);
-    const [stCard, setstCard] = useState<boolean>(false);
+
+    const [IdPeriodo, setIdPeriodo] = useState<string>("");
+    const [nomePeriodo, setNomePeriodo] = useState<string>("");
+    const [increment, setIncrement] = useState<number>(0);
+    const [operador, setOperador] = useState<string>("");
+    const [duracao, setDuracao] = useState<number>(0);
+    const [tempo, setTempo] = useState<string>("Dia(s)");
     const [ativo, setAtivo] = useState<boolean>(false);
     const [fav, setFav] = useState<boolean>(false);
 
@@ -61,13 +60,13 @@ export default function FormaPage() {
 
     const ClearForm = () => {
 
-        setIdForma("");
-        setNomeForma("");
+        setIdPeriodo("");
+        setNomePeriodo("");
         setAtivo(false);
         setFav(false);
-        setreqInst(false);
-        setreqDoc(false);
-        setstCard(false);
+        setOperador("+");
+        setIncrement(0);
+
 
         setstatusSaved(false);
     };
@@ -81,12 +80,9 @@ export default function FormaPage() {
         setshowModalPesq(false);
         console.log(choiced);
         if (haschoice) {
-            setIdForma(choiced[0]);
-            setNomeForma(choiced[1]);
-
-            setreqInst(choiced[2] === "S" ? true : false);
-            setreqDoc(choiced[3] === "S" ? true : false);
-            setstCard(choiced[4] === "S" ? true : false);
+            setIdPeriodo(choiced[0]);
+            setNomePeriodo(choiced[1]);
+            setIncrement(choiced[2]);
 
             setAtivo(choiced[5] === "S" ? true : false);
             setFav(choiced[6] === "S" ? true : false);
@@ -100,7 +96,7 @@ export default function FormaPage() {
 
     const handleNew = () => {
 
-        if ((nomeForma !== "") && !statusSaved) {
+        if ((nomePeriodo !== "") && !statusSaved) {
             setshowModal(true);
         } else { ClearForm(); }
     };
@@ -110,11 +106,13 @@ export default function FormaPage() {
     const handleSave = async () => {
 
         const saveData = {
-            id_forma: IdForma,
-            nome_forma: nomeForma,
-            req_inst: reqInst,
-            req_doc: reqDoc,
-            st_card: stCard,
+            id_forma: IdPeriodo,
+            nome_forma: nomePeriodo,
+            increment: increment,
+            operator: operador,
+            duration: duracao,
+            tempo: tempo,
+
             fav: fav,
             ativo: ativo
         };
@@ -123,7 +121,7 @@ export default function FormaPage() {
 
         setLoader(true);
 
-        if (IdForma === "") {
+        if (IdPeriodo === "") {
 
             await axios.post('http://localhost:6001/api/forma/', saveData)
                 .then((response) => {
@@ -131,7 +129,7 @@ export default function FormaPage() {
                     setLoader(false);
                 })
                 .catch((error) => {
-                    console.log("Erro Post Forma", error);
+                    console.log("Erro Post Periodo", error);
                     setAlert(99);
                     setLoader(false);
                 });
@@ -144,7 +142,7 @@ export default function FormaPage() {
                     setLoader(false);
                 })
                 .catch((error) => {
-                    console.log("Erro Patch Forma");
+                    console.log("Erro Patch Periodo");
                     setAlert(99);
                     setLoader(false);
                 });
@@ -153,7 +151,7 @@ export default function FormaPage() {
     };
 
     const handlePesq = async () => {
-        setHeaderTablePesq(["ID", "Forma", "*ReqInst", "*ReqDoc", "*StCard", "Ativo", "*Fav"]);
+        setHeaderTablePesq(["ID", "Periodo", "*ReqInst", "*ReqDoc", "*StCard", "Ativo", "*Fav"]);
         let datarow: any = [];
         await axios.get('http://localhost:6001/api/formas/')
             .then((response) => {
@@ -182,7 +180,7 @@ export default function FormaPage() {
                 setDataTablePesq(datarow);
             })
             .catch((error) => {
-                console.log("Erro Find Formas", error);
+                console.log("Erro Find Periodos", error);
             });
 
 
@@ -200,13 +198,13 @@ export default function FormaPage() {
         <FormSmall>
             <MyLoader active={loader}>
 
-                <TitleForm>FORMAS</TitleForm>
+                <TitleForm>PERIODOS</TitleForm>
 
 
 
                 <CardFlexCol color={"#BCD2EE"} space={10}>
                     <Stack direction={'row'} spacing={2}>
-                        <TextField id="outlined-basic" label="Nome Forma" variant="outlined" style={{ width: '80%' }} value={nomeForma} onChange={(e) => setNomeForma(e.target.value)} />
+                        <TextField id="outlined-basic" label="Nome Periodo" variant="outlined" style={{ width: '80%' }} value={nomePeriodo} onChange={(e) => setNomePeriodo(e.target.value)} />
                         <FormControlLabel
                             control={<Checkbox onChange={handleChangeAtivo} value={ativo} checked={ativo} />}
                             label="Ativo"
@@ -214,21 +212,22 @@ export default function FormaPage() {
                     </Stack>
                 </CardFlexCol>
 
-                <CardFlexCol color={"#BCD2EE"} space={10} centered>
+                <CardFlexCol color={"#BCD2EE"} space={10} >
                     <Stack direction={'row'} spacing={2}>
 
+                        <TextField id="outlined-basic" label="Incremento" variant="outlined" style={{ width: '20%' }} value={nomePeriodo} onChange={(e) => setNomePeriodo(e.target.value)} />
+                        <Select value={tempo} onChange={handleChangeTempo} style={{ width: '20%' }}>
+                            <MenuItem value={"Dia"}>Dia(s)</MenuItem>
+                            <MenuItem value={"Mes"}>Mes(es)</MenuItem>
+                            <MenuItem value={"Ano"}>Ano(s)</MenuItem>
+                        </Select>
+
                         <FormControlLabel
-                            control={<Checkbox onChange={handleChangeCard} value={stCard} checked={stCard} />}
-                            label="Cartão"
+                            control={<Checkbox onChange={handleChangeAtivo} value={ativo} checked={ativo} />}
+                            label="Parcelado" style={{ marginLeft: "7%" }}
                         />
-                        <FormControlLabel
-                            control={<Checkbox onChange={handleChangeInst} value={reqInst} checked={reqInst} />}
-                            label="Req. Inst."
-                        />
-                        <FormControlLabel
-                            control={<Checkbox onChange={handleChangeDoc} value={reqDoc} checked={reqDoc} />}
-                            label="Req. Doc"
-                        />
+                        <TextField id="outlined-basic" label="Default" variant="outlined" style={{ width: '20%' }} value={nomePeriodo} onChange={(e) => setNomePeriodo(e.target.value)} />
+
                     </Stack>
                 </CardFlexCol>
 
@@ -237,10 +236,7 @@ export default function FormaPage() {
                         <Image src={"/icons/file2.svg"} width={50} height={50} style={{ marginRight: "10px" }} onClick={handleNew} />
                         <Image src={"/icons/Download.svg"} width={41} height={50} style={{ marginRight: "50px" }} onClick={handleSave} />
                         <Image src={"/icons/del2.svg"} width={50} height={50} />
-                        {fav === true ?
-                            <Image src={"/icons/love1.png"} width={50} height={50} onClick={() => setFav(!fav)} /> :
-                            <Image src={"/icons/love2.svg"} width={50} height={50} onClick={() => setFav(!fav)} />
-                        }
+
 
                         <Image src={"/icons/browser.svg"} width={41} height={50} onClick={handlePesq} />
                     </DivLeft>
