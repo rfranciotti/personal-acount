@@ -61,14 +61,14 @@ export const CardFlex = styled.div<{ noborder?: boolean; space?: number; color?:
     };
 
 `;
-export const CardFlexCol = styled.div<{ noborder?: boolean; space?: number; color?: any; centered?: boolean; }>`
+export const CardFlexCol = styled.div<{ noborder?: boolean; space?: number; color?: any; centered?: boolean; nomargin?: boolean; }>`
     display:flex;
-    margin-top:5px;
-    margin-bottom:10px;
-    margin-left:10px;
-    margin-right:10px;
+    margin-top:${props => props.nomargin ? `0px` : `5px`};
+    margin-bottom:${props => props.nomargin ? `0px` : `10px`};
+    margin-left:${props => props.nomargin ? `0px` : `10px`};
+    margin-right:${props => props.nomargin ? `0px` : `10px`};
     border-radius: 5px;
-    padding:20px;
+    padding:${props => props.nomargin ? `10px` : `20px`};
     border: ${props => props.noborder ? `0px` : `2px solid ${props.color}`};
     font-family: 'Poppins', sans-serif !important;
     gap:${props => props.space + "px"} ;
@@ -85,12 +85,15 @@ export const BoxBorder = styled.div`
     
 `;
 
-export const DivFlex = styled.div<{ gap: number; bottom?: number; }>`
+export const DivFlex = styled.div<{ gap: number; top?: number, bottom?: number; nomargin?: boolean; left?: number; }>`
 
-    margin-top:20px;
+    margin:${props => props.nomargin && "0px"} ;
+    margin-top:${props => props.top ? props.top + "px" : `0px`};
     display:flex;
     gap:${props => props.gap + "px"} ;
     margin-bottom:${props => props.bottom ? props.bottom + "px" : "0px"} ;
+    margin-left:${props => props.left ? props.left + "px" : "0px"} ;
+    
 `;
 
 export const DivLeft = styled.div<{ bottom?: number; }>`

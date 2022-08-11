@@ -63,7 +63,7 @@ export const FormSmall = styled.div`
   
 }
 `;
-export const FormLarge = styled.div`
+export const FormLarge = styled.div<{ padding?: number; }>`
   width:100%;
   height:100%;
   background-color:white;
@@ -72,7 +72,10 @@ export const FormLarge = styled.div`
     -webkit-box-shadow: 0px 0px 7px -3px #000000; 
     box-shadow: 7px 2px 7px -3px #000000;
     
+    overflow-y:scroll;
+    overflow-x:hidden;
 
+    padding: ${props => props.padding && props.padding + "px"};
 
 `;
 

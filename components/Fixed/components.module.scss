@@ -17,6 +17,7 @@
     background-color: rgb(0, 0, 0);
     transition: 0.3s ease-in-out;
     overflow: hidden;
+    z-index: 100;
 
     &:hover {
         width: 170px;
